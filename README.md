@@ -1,5 +1,5 @@
 # hacker-news repository
-This is a recruitment task about using the Hacker News API to provide (top n) best stories.
+This is a recruitment task solution using the Hacker News API to provide (top n) best stories.
 
 ## Endpoint
 The repository contains a single solution with a single web application that implements a single controller with a single endpoint.
