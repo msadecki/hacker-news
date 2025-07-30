@@ -3,7 +3,6 @@ namespace HackerNewsWebApp.Features.BestStories.Dtos;
 /// <summary>
 /// Stories, comments, jobs, Ask HNs and even polls are just items. They're identified by their ids, which are unique integers.
 /// </summary>
-/// <param name="Field">Description</param>
 /// <param name="Id">The item's unique id.</param>
 /// <param name="Deleted">true if the item is deleted.</param>
 /// <param name="Type">The type of item. One of "job", "story", "comment", "poll", or "pollopt".</param>

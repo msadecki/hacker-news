@@ -5,12 +5,12 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace HackerNewsWebApp.Features.BestStories.Repositories;
 
-public interface IHackerNewsItemRepository
+public interface IBestStoryRepository
 {
     Task<IReadOnlyCollection<BestStoryDto>> GetBestStories(int topCount, CancellationToken cancellationToken);
 }
 
-public sealed class HackerNewsItemRepository(IMemoryCache memoryCache) : IHackerNewsItemRepository
+public sealed class BestStoryRepository(IMemoryCache memoryCache) : IBestStoryRepository
 {
     private static class WebJsonHelper
     {
@@ -24,7 +24,7 @@ public sealed class HackerNewsItemRepository(IMemoryCache memoryCache) : IHacker
 
     public async Task<IReadOnlyCollection<BestStoryDto>> GetBestStories(int topCount, CancellationToken cancellationToken)
     {
-        var key = $"{nameof(HackerNewsItemRepository)}.{nameof(GetBestStoriesHackerNewsItems)}";
+        var key = $"{nameof(BestStoryRepository)}.{nameof(GetBestStoriesHackerNewsItems)}";
         var hackerNewsItemDtos = await memoryCache.GetOrCreateAsync(
            key,
            cacheEntry =>
@@ -36,6 +36,7 @@ public sealed class HackerNewsItemRepository(IMemoryCache memoryCache) : IHacker
         return new ReadOnlyCollectionBuilder<BestStoryDto>(
             hackerNewsItemDtos!.Where(hackerNewsItemDto => hackerNewsItemDto != null)
                                .OrderByDescending(hackerNewsItemDto => hackerNewsItemDto!.Score)
+                               .ThenByDescending(hackerNewsItemDto => hackerNewsItemDto!.Id)
                                .Take(topCount)
                                .Select(CreateBestStoryDto)).ToReadOnlyCollection();
     }
