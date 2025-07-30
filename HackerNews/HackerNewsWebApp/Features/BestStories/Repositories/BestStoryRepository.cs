@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.Json;
 using HackerNewsWebApp.Features.BestStories.Dtos;
+using HackerNewsWebApp.Features.BestStories.Mappers;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace HackerNewsWebApp.Features.BestStories.Repositories;
@@ -10,7 +11,9 @@ public interface IBestStoryRepository
     Task<IReadOnlyCollection<BestStoryDto>> GetBestStories(int topCount, CancellationToken cancellationToken);
 }
 
-public sealed class BestStoryRepository(IMemoryCache memoryCache) : IBestStoryRepository
+internal sealed class BestStoryRepository(
+    IMemoryCache memoryCache,
+    IBestStoryDtoMapper bestStoryDtoMapper) : IBestStoryRepository
 {
     private static class WebJsonHelper
     {
@@ -38,7 +41,7 @@ public sealed class BestStoryRepository(IMemoryCache memoryCache) : IBestStoryRe
                                .OrderByDescending(hackerNewsItemDto => hackerNewsItemDto!.Score)
                                .ThenByDescending(hackerNewsItemDto => hackerNewsItemDto!.Id)
                                .Take(topCount)
-                               .Select(CreateBestStoryDto)).ToReadOnlyCollection();
+                               .Select(bestStoryDtoMapper.CreateBestStoryDto)).ToReadOnlyCollection();
     }
 
     private static async Task<IReadOnlyCollection<HackerNewsItemDto?>> GetBestStoriesHackerNewsItems(CancellationToken cancellationToken)
@@ -89,16 +92,5 @@ public sealed class BestStoryRepository(IMemoryCache memoryCache) : IBestStoryRe
         {
             throw new ApplicationException($"{nameof(GetHackerNewsItem)} - IsSuccessStatusCode false");
         }
-    }
-
-    private static BestStoryDto CreateBestStoryDto(HackerNewsItemDto? hackerNewsItemDto)
-    {
-        return new BestStoryDto(
-            Title: hackerNewsItemDto!.Title,
-            Uri: hackerNewsItemDto.Url,
-            PostedBy: hackerNewsItemDto.By,
-            Time: hackerNewsItemDto.Time != null ? DateTimeOffset.FromUnixTimeSeconds(hackerNewsItemDto.Time.Value) : null,
-            Score: hackerNewsItemDto.Score,
-            CommentCount: hackerNewsItemDto.Descendants);
     }
 }

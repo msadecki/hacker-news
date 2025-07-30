@@ -1,4 +1,5 @@
 using System.Reflection;
+using HackerNewsWebApp.Features.BestStories.Mappers;
 using HackerNewsWebApp.Features.BestStories.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -10,6 +11,7 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssemblyContaining<Program>());
 
 builder.Services.AddSingleton<IMemoryCache>(_ => new MemoryCache(new MemoryCacheOptions()));
+builder.Services.AddTransient<IBestStoryDtoMapper, BestStoryDtoMapper>();
 builder.Services.AddTransient<IBestStoryRepository, BestStoryRepository>();
 
 builder.Services.AddControllers();

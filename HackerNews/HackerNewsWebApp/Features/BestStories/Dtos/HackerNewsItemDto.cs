@@ -18,7 +18,7 @@ namespace HackerNewsWebApp.Features.BestStories.Dtos;
 /// <param name="Title">The title of the story, poll or job. HTML.</param>
 /// <param name="Parts">A list of related pollopts, in display order.</param>
 /// <param name="Descendants">In the case of stories or polls, the total comment count.</param>
-public sealed record HackerNewsItemDto(
+internal sealed record HackerNewsItemDto(
     int Id,
     bool? Deleted,
     string? Type,

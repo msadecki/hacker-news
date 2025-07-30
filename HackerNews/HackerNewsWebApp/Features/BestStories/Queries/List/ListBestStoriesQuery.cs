@@ -4,9 +4,9 @@ using MediatR;
 
 namespace HackerNewsWebApp.Features.BestStories.Queries.List;
 
-public sealed record ListBestStoriesQuery(int TopCount) : IRequest<IReadOnlyCollection<BestStoryDto>>;
+internal sealed record ListBestStoriesQuery(int TopCount) : IRequest<IReadOnlyCollection<BestStoryDto>>;
 
-public sealed class ListBestStoriesQueryHandler(IBestStoryRepository hackerNewsItemRepository) : IRequestHandler<ListBestStoriesQuery, IReadOnlyCollection<BestStoryDto>>
+internal sealed class ListBestStoriesQueryHandler(IBestStoryRepository hackerNewsItemRepository) : IRequestHandler<ListBestStoriesQuery, IReadOnlyCollection<BestStoryDto>>
 {
     public async Task<IReadOnlyCollection<BestStoryDto>> Handle(ListBestStoriesQuery request, CancellationToken cancellationToken)
     {
