@@ -2,14 +2,14 @@
 
 namespace HackerNewsWebApp.Features.BestStories.Mappers;
 
-internal interface IBestStoryDtoMapper
+internal interface IBestStoryDtoFactory
 {
-    BestStoryDto CreateBestStoryDto(HackerNewsItemDto? hackerNewsItemDto);
+    BestStoryDto Create(HackerNewsItemDto? hackerNewsItemDto);
 }
 
-internal sealed class BestStoryDtoMapper : IBestStoryDtoMapper
+internal sealed class BestStoryDtoFactory : IBestStoryDtoFactory
 {
-    public BestStoryDto CreateBestStoryDto(HackerNewsItemDto? hackerNewsItemDto)
+    public BestStoryDto Create(HackerNewsItemDto? hackerNewsItemDto)
     {
         return new BestStoryDto(
             Title: hackerNewsItemDto!.Title,

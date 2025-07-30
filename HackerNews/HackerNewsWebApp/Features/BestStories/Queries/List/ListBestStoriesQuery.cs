@@ -6,10 +6,10 @@ namespace HackerNewsWebApp.Features.BestStories.Queries.List;
 
 internal sealed record ListBestStoriesQuery(int TopCount) : IRequest<IReadOnlyCollection<BestStoryDto>>;
 
-internal sealed class ListBestStoriesQueryHandler(IBestStoryRepository hackerNewsItemRepository) : IRequestHandler<ListBestStoriesQuery, IReadOnlyCollection<BestStoryDto>>
+internal sealed class ListBestStoriesQueryHandler(IBestStoryRepository bestStoryRepository) : IRequestHandler<ListBestStoriesQuery, IReadOnlyCollection<BestStoryDto>>
 {
     public async Task<IReadOnlyCollection<BestStoryDto>> Handle(ListBestStoriesQuery request, CancellationToken cancellationToken)
     {
-        return await hackerNewsItemRepository.GetBestStories(request.TopCount, cancellationToken);
+        return await bestStoryRepository.GetBestStories(request.TopCount, cancellationToken);
     }
 }

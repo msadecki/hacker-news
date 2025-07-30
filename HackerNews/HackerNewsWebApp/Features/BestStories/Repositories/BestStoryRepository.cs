@@ -13,7 +13,7 @@ public interface IBestStoryRepository
 
 internal sealed class BestStoryRepository(
     IMemoryCache memoryCache,
-    IBestStoryDtoMapper bestStoryDtoMapper) : IBestStoryRepository
+    IBestStoryDtoFactory bestStoryDtoFactory) : IBestStoryRepository
 {
     private static class WebJsonHelper
     {
@@ -41,7 +41,7 @@ internal sealed class BestStoryRepository(
                                .OrderByDescending(hackerNewsItemDto => hackerNewsItemDto!.Score)
                                .ThenByDescending(hackerNewsItemDto => hackerNewsItemDto!.Id)
                                .Take(topCount)
-                               .Select(bestStoryDtoMapper.CreateBestStoryDto)).ToReadOnlyCollection();
+                               .Select(bestStoryDtoFactory.Create)).ToReadOnlyCollection();
     }
 
     private static async Task<IReadOnlyCollection<HackerNewsItemDto?>> GetBestStoriesHackerNewsItems(CancellationToken cancellationToken)

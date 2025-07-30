@@ -11,7 +11,7 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssemblyContaining<Program>());
 
 builder.Services.AddSingleton<IMemoryCache>(_ => new MemoryCache(new MemoryCacheOptions()));
-builder.Services.AddTransient<IBestStoryDtoMapper, BestStoryDtoMapper>();
+builder.Services.AddTransient<IBestStoryDtoFactory, BestStoryDtoFactory>();
 builder.Services.AddTransient<IBestStoryRepository, BestStoryRepository>();
 
 builder.Services.AddControllers();
