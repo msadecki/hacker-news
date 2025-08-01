@@ -50,28 +50,21 @@ internal sealed class BestStoryRepository(
         {
             var bestStoriesIdsApiEndpointUrl = "https://hacker-news.firebaseio.com/v0/beststories.json";
 
-            try
+            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+
+            var bestStoriesIdsResponse = await httpClient.GetAsync(bestStoriesIdsApiEndpointUrl, cancellationToken);
+            if (bestStoriesIdsResponse.EnsureSuccessStatusCode().IsSuccessStatusCode)
             {
-                httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+                var bestStoriesIdsResponseJsonString = await bestStoriesIdsResponse.Content.ReadAsStringAsync(cancellationToken);
+                var bestStoriesIds = WebJsonHelper.Deserialize<int[]>(bestStoriesIdsResponseJsonString) ?? Array.Empty<int>();
 
-                var bestStoriesIdsResponse = await httpClient.GetAsync(bestStoriesIdsApiEndpointUrl, cancellationToken);
-                if (bestStoriesIdsResponse.EnsureSuccessStatusCode().IsSuccessStatusCode)
-                {
-                    var bestStoriesIdsResponseJsonString = await bestStoriesIdsResponse.Content.ReadAsStringAsync(cancellationToken);
-                    var bestStoriesIds = WebJsonHelper.Deserialize<int[]>(bestStoriesIdsResponseJsonString) ?? Array.Empty<int>();
+                var hackerNewsItemDtos = await Task.WhenAll(bestStoriesIds.Select(id => GetHackerNewsItem(httpClient, id, cancellationToken)));
 
-                    var hackerNewsItemDtos = await Task.WhenAll(bestStoriesIds.Select(id => GetHackerNewsItem(httpClient, id, cancellationToken)));
-
-                    return hackerNewsItemDtos;
-                }
-                else
-                {
-                    throw new ApplicationException($"{nameof(GetBestStoriesHackerNewsItems)} - IsSuccessStatusCode false");
-                }
+                return hackerNewsItemDtos;
             }
-            catch (Exception)
+            else
             {
-                throw;
+                throw new ApplicationException($"{nameof(GetBestStoriesHackerNewsItems)} - IsSuccessStatusCode false");
             }
         }
     }
